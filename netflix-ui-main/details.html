@@ -41,78 +41,64 @@
 
         </div>
         <button type="button" class="btn btn-success" onclick="onEdit()">Edit Event</button>
-        <button type="button" class="btn btn-danger" onclick="onDelete()">Delete Event</button>
+        <button type="button" class="btn btn-danger" onclick="deleteProduct()">Delete Event</button>
       </div>
     </div>
   </div>
 
   <script>
-    const params = new URLSearchParams(
-      window.location.search
-    )
-    const movieId = params.get('movieId')
+      const params = new URLSearchParams(window.location.search)
+        const id = params.get("id")
+        const BASE_URL = "https://striveschool-api.herokuapp.com/api/movies/"
+        const headers = new Headers({
+            "Content-Type": "application/json",
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc",
+        })
 
-    async function getMovies() {
-
-      const response = await fetch(`https://striveschool-api.herokuapp.com/api/movies/${movieId}`,{
-headers: {
-"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThhYWQ0YmUzZDAwMTU4NDVmYzUiLCJpYXQiOjE2NjgxNjAyMjMsImV4cCI6MTY2OTM2OTgyM30.fVHZ6bAyiKK5Cy25k4pPcnSYA9HJBS-taORPi5ZQvzI"
-}
-}) 
-      const movie = await response.json()
-      return movie
-      console.log(movie)
-    }
-
-    function renderMovies(movie) {
-      
-
-      document.querySelector('#event-details').innerHTML = `
-      <h1 class="display-4">${movie.name}</h1>
-      <p>${movie.description}</p>
-      <div> <img src="${movie.imageUrl}"> </div>
-        <li class="list-group-item pl-2"><b>createdAt: </b>${movie.createdAt}</li>
-        <li class="list-group-item pl-2"><b>updatedAt: </b>${movie.updatedAt}</li>
-      </ul>`
-    }
-
-    window.onload = async () => {
-      const movie = await getMovies()
-      renderMovies(movie)
-    }
-
-    async function onDelete() {
-
-      try {
-
-        if (confirm("Do you really want to delete this event?")) {
-          const options = { method: 'DELETE' }
-          const response = await fetch(`https://striveschool-api.herokuapp.com/api/movies/${movieId}`,{
-headers: {
-"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThhYWQ0YmUzZDAwMTU4NDVmYzUiLCJpYXQiOjE2NjgxNjAyMjMsImV4cCI6MTY2OTM2OTgyM30.fVHZ6bAyiKK5Cy25k4pPcnSYA9HJBS-taORPi5ZQvzI"
-}
-}) 
-          
-          if (response.ok) {
-            // This is like an a tag, but in JavaScript
-            window.location.assign('index.html')
-          } else {
-            alert("Error while deleting!")
-          }
+        function renderMovie(movie) {
+            let container = document.getElementById("main")
+            const movieCard = document.createElement("div")
+            movieCard.innerHTML = `
+        <div class="card justify-items-center">
+        <img class="mt-3" src="${movie.imageUrl}" style="width: 300px; border: 2px solid white; border-radius: 20px; margin: 0 auto;" />
+        <div class="card-body">
+            <h2 class="text-light" style="font-size: 3em;">${movie.name}</h2>
+            <h5 class="card-title text-light">Category: ${movie.category}</h5>
+            <p class="text-light">${movie.description}</p>
+            <button class="btn btn-danger" onclick="deleteProduct()">DELETE</button>
+            <a class="btn btn-warning" href="office.html?id=${movie._id}">Edit</a>
+        </div>
+    </div>`
+            container.appendChild(movieCard)
         }
 
-      } catch (error) {
-        alert(`Some erorr occured: ${error}`)
-      }
+        async function getMovieDetails() {
+            const response = await fetch(BASE_URL + "id/" + id, { headers })
+            const movie = await response.json()
+            console.log(movie)
+            renderMovie(movie)
+        }
 
-    }
+        window.onload = () => {
+            getMovieDetails()
+        }
 
-    function onEdit() {
-      window.location.assign(`backoffice.html?movieId=${movieId}`)
-    }
+
+        async function deleteProduct() {
+            try {
+                const response = await fetch(BASE_URL + id, { method: "DELETE", headers })
+                alert("Movie Deleted Successfully")
+                location.assign("index.html")
+            }
+            catch (error) {
+                alert(error.message)
+            }
+        }
+
 
   </script>
-
+<script src="script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
     crossorigin="anonymous"></script>

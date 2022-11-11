@@ -50,38 +50,35 @@
     const params = new URLSearchParams(
       window.location.search
     )
-    const appointmentId = params.get('appointmentId')
+    const movieId = params.get('movieId')
 
-    async function getAppointment() {
+    async function getMovies() {
 
-      const response = await fetch(`https://striveschool-api.herokuapp.com/api/product/${appointmentId}`,{
+      const response = await fetch(`https://striveschool-api.herokuapp.com/api/movies/${movieId}`,{
 headers: {
-"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThhYWQ0YmUzZDAwMTU4NDVmYzUiLCJpYXQiOjE2NjgwODYwNzksImV4cCI6MTY2OTI5NTY3OX0.Vigxv6fEZm51naEqXEcH3ohBal7DOXmR71X35glLs7U"
+"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThhYWQ0YmUzZDAwMTU4NDVmYzUiLCJpYXQiOjE2NjgxNjAyMjMsImV4cCI6MTY2OTM2OTgyM30.fVHZ6bAyiKK5Cy25k4pPcnSYA9HJBS-taORPi5ZQvzI"
 }
 }) 
-      const appointment = await response.json()
-      return appointment
+      const movie = await response.json()
+      return movie
+      console.log(movie)
     }
 
-    function renderAppointment(appointment) {
-      const date = new Date(appointment.time)
+    function renderMovies(movie) {
+      
 
       document.querySelector('#event-details').innerHTML = `
-      <h1 class="display-4">${appointment.name}</h1>
-      <p>${appointment.description}</p>
-      <p class="text-monospace">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</p>
-      <h3 class="mb-3">${appointment.price}€<h3>
-      <h6 class="pl-2 py-3 bg-light">Server Details</h6>
-      <ul class="list-group list-group-flush mb-4">
-        <li class="list-group-item pl-2"><b>id: </b>${appointment._id}</li>
-        <li class="list-group-item pl-2"><b>createdAt: </b>${appointment.createdAt}</li>
-        <li class="list-group-item pl-2"><b>updatedAt: </b>${appointment.updatedAt}</li>
+      <h1 class="display-4">${movie.name}</h1>
+      <p>${movie.description}</p>
+      <div> <img src="${movie.imageUrl}"> </div>
+        <li class="list-group-item pl-2"><b>createdAt: </b>${movie.createdAt}</li>
+        <li class="list-group-item pl-2"><b>updatedAt: </b>${movie.updatedAt}</li>
       </ul>`
     }
 
     window.onload = async () => {
-      const appointment = await getAppointment()
-      renderAppointment(appointment)
+      const movie = await getMovies()
+      renderMovies(movie)
     }
 
     async function onDelete() {
@@ -90,9 +87,9 @@ headers: {
 
         if (confirm("Do you really want to delete this event?")) {
           const options = { method: 'DELETE' }
-          const response = await fetch(`https://striveschool-api.herokuapp.com/api/product/${appointmentId}`,{
+          const response = await fetch(`https://striveschool-api.herokuapp.com/api/movies/${movieId}`,{
 headers: {
-"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThhYWQ0YmUzZDAwMTU4NDVmYzUiLCJpYXQiOjE2NjgwODYwNzksImV4cCI6MTY2OTI5NTY3OX0.Vigxv6fEZm51naEqXEcH3ohBal7DOXmR71X35glLs7U"
+"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThhYWQ0YmUzZDAwMTU4NDVmYzUiLCJpYXQiOjE2NjgxNjAyMjMsImV4cCI6MTY2OTM2OTgyM30.fVHZ6bAyiKK5Cy25k4pPcnSYA9HJBS-taORPi5ZQvzI"
 }
 }) 
           
@@ -111,7 +108,7 @@ headers: {
     }
 
     function onEdit() {
-      window.location.assign(`backoffice.html?appointmentId=${appointmentId}`)
+      window.location.assign(`backoffice.html?movieId=${movieId}`)
     }
 
   </script>
